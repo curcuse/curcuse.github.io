@@ -4,64 +4,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>curcuse</title>
+  <title>Minecraft World</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <style>
-    body {
-      background-color: #ffffff;
-      color: #333333;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    body,
+    html {
       margin: 0;
-      padding: 2rem;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'VT323', monospace;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('background.png') no-repeat center center fixed;
+      background-size: cover;
+      z-index: -1;
+      image-rendering: pixelated;
+    }
+
+    /* Minecraft HUD Elements */
+    .hud {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      box-sizing: border-box;
+      pointer-events: none;
     }
 
-    .container {
-      background-color: #f0f4f9;
-      border-radius: 24px;
-      padding: 2rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      max-width: 600px;
-      width: 100%;
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 1.5rem;
-      color: #1a1a1a;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      color: #555555;
-      margin-bottom: 1.5rem;
-    }
-
-    .iframe-container {
+    .hotbar {
+      width: 364px;
+      height: 44px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 4px solid #373737;
       display: flex;
-      justify-content: center;
-      width: 100%;
+      justify-content: space-around;
+      align-items: center;
+      padding: 2px;
     }
 
-    iframe {
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    .slot {
+      width: 36px;
+      height: 36px;
+      border: 2px solid #8B8B8B;
+      background: rgba(139, 139, 139, 0.2);
+    }
+
+    .selected {
+      border: 4px solid #FFFFFF;
+      margin: -2px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 100px;
+      margin-bottom: 5px;
+    }
+
+    .hearts,
+    .food {
+      font-size: 24px;
+      color: #FF5555;
+      text-shadow: 2px 2px #000;
+    }
+
+    .food {
+      color: #AA5500;
+    }
+
+    /* Overlay text */
+    .welcome-text {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 64px;
+      text-align: center;
+      text-shadow: 4px 4px #373737;
+      pointer-events: none;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      50% {
+        transform: translate(-50%, -55%) scale(1.05);
+      }
+    }
+
+    .crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+      content: '';
+      position: absolute;
+      background: white;
+      mix-blend-mode: difference;
+    }
+
+    .crosshair::before {
+      top: 0;
+      left: 9px;
+      width: 2px;
+      height: 100%;
+    }
+
+    .crosshair::after {
+      top: 9px;
+      left: 0;
+      width: 100%;
+      height: 2px;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Latest Lichess Game</h1>
-    <p>Loading last played game on Lichess for account 'byteprogress'...</p>
-    <div class="iframe-container">
-      <iframe src="https://lichess.org/embed/game/Ph0E0GZw?theme=auto&bg=auto" width="100%" height="560" frameborder="0"
-        style="max-width: 340px;"></iframe>
+
+  <div class="background"></div>
+
+  <div class="welcome-text">
+  </div>
+
+  <div class="crosshair"></div>
+
+  <div class="hud">
+    <div class="stats">
+      <div class="hearts">❤❤❤❤❤❤❤❤❤❤</div>
+      <div class="food">🍗🍗🍗🍗🍗🍗🍗🍗🍗🍗</div>
+    </div>
+    <div class="hotbar">
+      <div class="slot selected"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
+      <div class="slot"></div>
     </div>
   </div>
+
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,142 +8,72 @@
   <style>
     body {
       background-color: #0c0c0c;
-      color: #00ff00;
+      color: #ffffff;
       font-family: 'Courier New', Courier, monospace;
       margin: 0;
-      padding: 0;
+      padding: 2rem;
       overflow-x: hidden;
     }
-    #matrix {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      opacity: 0.25; 
-      pointer-events: none;
-    }
-    .content {
-      position: relative;
-      z-index: 10;
-      padding: 2rem;
-    }
+
     a {
-      color: #00ff00;
+      color: #ffffff;
       text-decoration: none;
     }
+
     a:hover {
-      background-color: #00ff00;
+      background-color: #ffffff;
       color: #0c0c0c;
     }
+
     .prompt {
-      color: #00ff00;
+      color: #ffffff;
       font-weight: bold;
     }
+
     .cursor {
       display: inline-block;
       width: 10px;
       height: 1.2em;
-      background-color: #00ff00;
+      background-color: #ffffff;
       vertical-align: text-bottom;
       animation: blink 1s step-end infinite;
     }
+
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
     }
+
     .output-line {
       margin-bottom: 0.5rem;
-      text-shadow: 0 0 5px rgba(0, 255, 0, 0.5); /* giving the text a subtle glow over the canvas */
     }
+
     .ascii-art {
       font-size: 0.8rem;
       line-height: 1.2;
       margin-bottom: 1.5rem;
       white-space: pre-wrap;
-      text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
     }
   </style>
 </head>
+
 <body>
-  
-  <canvas id="matrix"></canvas>
-
-  <div class="content">
-    <div class="ascii-art">
-     ____                             
-    / ___|   _ _ __ ___ _   _ ___ ___ 
-   | |  | | | | '__/ __| | | / __/ _ \
-   | |__| |_| | | | (__| |_| \__ \  __/
-    \____\__,_|_|  \___|\__,_|___/\___|
+  <div>
+    <div class="output-line"><span class="prompt">curcuse@github:~$</span> ./show_last_chess_game.sh</div>
+    <div class="output-line">Loading last played game on Lichess for account 'byteprogress'...</div>
+    <div class="output-line">
+      <iframe src="https://lichess.org/embed/game/Ph0E0GZw?theme=auto&bg=auto" width="100%" height="560" frameborder="0"
+        style="max-width: 340px; border: 1px solid #ffffff; margin-top: 10px; opacity: 0.9;"></iframe>
     </div>
-    
-    <div class="output-line">Welcome to curcuse.github.io v1.0.0</div>
-    <div class="output-line">System: Linux 6.1.0-generic x86_64</div>
-    <div class="output-line">Last login: <script>document.write(new Date().toString().split(' GMT')[0])</script></div>
     <br>
-    
-    <div class="output-line"><span class="prompt">curcuse@github:~$</span> cat about.txt</div>
-    <div class="output-line">Hello, World! I'm a developer.</div>
-    <div class="output-line">Exploring the digital universe one byte at a time.</div>
-    <br>
-    
-    <div class="output-line"><span class="prompt">curcuse@github:~$</span> echo "Contact me:"</div>
-    <div class="output-line">- <a href="https://github.com/curcuse">GitHub</a></div>
-    <div class="output-line">- <a href="mailto:styibhandari@gmail.com">Email</a></div>
-    <br>
-
-    <div class="output-line"><span class="prompt">curcuse@github:~$</span> <span class="cursor"></span></div>
   </div>
-
-  <script>
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
-    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const nums = '0123456789';
-    const alphabet = katakana + latin + nums;
-
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-
-    const rainDrops = [];
-
-    for( let x = 0; x < columns; x++ ) {
-        rainDrops[x] = 1;
-    }
-
-    const draw = () => {
-        ctx.fillStyle = 'rgba(12, 12, 12, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = '#0F0';
-        ctx.font = fontSize + 'px monospace';
-
-        for(let i = 0; i < rainDrops.length; i++)
-        {
-            const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-            ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
-            if(rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975){
-                rainDrops[i] = 0;
-            }
-            rainDrops[i]++;
-        }
-    };
-
-    setInterval(draw, 30);
-    
-    // Handle window resize
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-  </script>
 </body>
+
 </html>

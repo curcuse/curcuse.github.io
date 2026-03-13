@@ -1,173 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Minecraft World</title>
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-  <style>
-    body,
-    html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'VT323', monospace;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Dino Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            user-select: none;
+        }
 
-    .background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: url('background.png') no-repeat center center fixed;
-      background-size: cover;
-      z-index: -1;
-      image-rendering: pixelated;
-    }
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 200px;
+            border-bottom: 2px solid #535353;
+            background-color: #f7f7f7;
+        }
 
-    /* Minecraft HUD Elements */
-    .hud {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      pointer-events: none;
-    }
+        canvas {
+            display: block;
+        }
 
-    .hotbar {
-      width: 364px;
-      height: 44px;
-      background: rgba(0, 0, 0, 0.5);
-      border: 4px solid #373737;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 2px;
-    }
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            color: #535353;
+            font-family: monospace;
+        }
 
-    .slot {
-      width: 36px;
-      height: 36px;
-      border: 2px solid #8B8B8B;
-      background: rgba(139, 139, 139, 0.2);
-    }
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            display: none;
+        }
 
-    .selected {
-      border: 4px solid #FFFFFF;
-      margin: -2px;
-    }
+        #game-over h1 {
+            color: #535353;
+            font-size: 24px;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+        }
 
-    .stats {
-      display: flex;
-      gap: 100px;
-      margin-bottom: 5px;
-    }
+        #restart-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
 
-    .hearts,
-    .food {
-      font-size: 24px;
-      color: #FF5555;
-      text-shadow: 2px 2px #000;
-    }
+        #restart-btn svg {
+            fill: #535353;
+            width: 36px;
+            height: 36px;
+        }
 
-    .food {
-      color: #AA5500;
-    }
-
-    /* Overlay text */
-    .welcome-text {
-      position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 64px;
-      text-align: center;
-      text-shadow: 4px 4px #373737;
-      pointer-events: none;
-      animation: bounce 2s infinite ease-in-out;
-    }
-
-    @keyframes bounce {
-
-      0%,
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-      }
-
-      50% {
-        transform: translate(-50%, -55%) scale(1.05);
-      }
-    }
-
-    .crosshair {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 20px;
-      height: 20px;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .crosshair::before,
-    .crosshair::after {
-      content: '';
-      position: absolute;
-      background: white;
-      mix-blend-mode: difference;
-    }
-
-    .crosshair::before {
-      top: 0;
-      left: 9px;
-      width: 2px;
-      height: 100%;
-    }
-
-    .crosshair::after {
-      top: 9px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-    }
-  </style>
+        .instructions {
+            position: absolute;
+            bottom: -40px;
+            width: 100%;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+    </style>
 </head>
-
 <body>
 
-  <div class="background"></div>
+    <div id="game-container">
+        <div id="score">00000</div>
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="game-over">
+            <h1>G A M E  O V E R</h1>
+            <button id="restart-btn" onclick="resetGame()">
+                <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+            </button>
+        </div>
 
-  <div class="welcome-text">
-  </div>
-
-  <div class="crosshair"></div>
-
-  <div class="hud">
-    <div class="stats">
-      <div class="hearts">❤❤❤❤❤❤❤❤❤❤</div>
-      <div class="food">🍗🍗🍗🍗🍗🍗🍗🍗🍗🍗</div>
+        <div class="instructions">Press Space or Tap to Jump</div>
     </div>
-    <div class="hotbar">
-      <div class="slot selected"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-      <div class="slot"></div>
-    </div>
-  </div>
 
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('game-over');
+
+        // Game state
+        let gameRunning = true;
+        let score = 0;
+        let gameSpeed = 5;
+        let animationId;
+
+        // Resize canvas
+        canvas.width = 800;
+        canvas.height = 200;
+
+        // Dino properties
+        const dino = {
+            x: 50,
+            y: 150,
+            width: 44,
+            height: 47,
+            dy: 0,
+            jumpForce: 12,
+            gravity: 0.6,
+            grounded: false,
+            color: '#535353'
+        };
+
+        // Obstacles
+        let obstacles = [];
+        const obstacleWidth = 20;
+        const obstacleHeight = 40;
+
+        function drawDino() {
+            ctx.fillStyle = dino.color;
+            // Simplified Dino Shape (Pixel style)
+            // Body
+            ctx.fillRect(dino.x + 10, dino.y, 25, 35);
+            // Head
+            ctx.fillRect(dino.x + 25, dino.y - 12, 18, 15);
+            // Tail
+            ctx.fillRect(dino.x, dino.y + 10, 10, 15);
+            // Legs
+            ctx.fillRect(dino.x + 12, dino.y + 35, 8, 12);
+            ctx.fillRect(dino.x + 24, dino.y + 35, 8, 12);
+        }
+
+        function drawCactus(x, y, h) {
+            ctx.fillStyle = '#535353';
+            // Main stem
+            ctx.fillRect(x + 8, y + (40 - h), 6, h);
+            // Arms
+            if (h > 20) {
+                ctx.fillRect(x, y + (40 - h) + 10, 8, 4); // Left arm
+                ctx.fillRect(x, y + (40 - h) + 5, 4, 10);
+                
+                ctx.fillRect(x + 14, y + (40-h) + 15, 8, 4); // Right arm
+                ctx.fillRect(x + 18, y + (40-h) + 10, 4, 10);
+            }
+        }
+
+        function createObstacle() {
+            const height = Math.random() * (45 - 30) + 30;
+            obstacles.push({
+                x: canvas.width,
+                y: 200 - height,
+                width: 25,
+                height: height
+            });
+        }
+
+        function update() {
+            if (!gameRunning) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dino Physics
+            if (!dino.grounded) {
+                dino.dy += dino.gravity;
+                dino.y += dino.dy;
+            }
+
+            if (dino.y > 150) {
+                dino.y = 150;
+                dino.dy = 0;
+                dino.grounded = true;
+            }
+
+            drawDino();
+
+            // Obstacle logic
+            if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - (Math.random() * 400 + 200)) {
+                createObstacle();
+            }
+
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].x -= gameSpeed;
+                drawCactus(obstacles[i].x, obstacles[i].y, obstacles[i].height);
+
+                // Collision Detection
+                if (
+                    dino.x < obstacles[i].x + obstacles[i].width &&
+                    dino.x + dino.width > obstacles[i].x &&
+                    dino.y < obstacles[i].y + obstacles[i].height &&
+                    dino.y + dino.height > obstacles[i].y
+                ) {
+                    endGame();
+                }
+
+                if (obstacles[i].x + obstacles[i].width < 0) {
+                    obstacles.splice(i, 1);
+                    score++;
+                    updateScoreDisplay();
+                }
+            }
+
+            // Speed up
+            gameSpeed += 0.001;
+
+            animationId = requestAnimationFrame(update);
+        }
+
+        function updateScoreDisplay() {
+            let s = score.toString();
+            while (s.length < 5) s = '0' + s;
+            scoreElement.innerText = s;
+        }
+
+        function jump() {
+            if (dino.grounded && gameRunning) {
+                dino.dy = -dino.jumpForce;
+                dino.grounded = false;
+            }
+        }
+
+        function endGame() {
+            gameRunning = false;
+            gameOverElement.style.display = 'block';
+            cancelAnimationFrame(animationId);
+        }
+
+        function resetGame() {
+            score = 0;
+            gameSpeed = 5;
+            obstacles = [];
+            dino.y = 150;
+            dino.dy = 0;
+            dino.grounded = true;
+            gameRunning = true;
+            gameOverElement.style.display = 'none';
+            updateScoreDisplay();
+            update();
+        }
+
+        // Controls
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                jump();
+            }
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            jump();
+            e.preventDefault();
+        });
+
+        canvas.addEventListener('mousedown', () => {
+            jump();
+        });
+
+        // Start
+        update();
+
+    </script>
 </body>
-
 </html>

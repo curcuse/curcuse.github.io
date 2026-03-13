@@ -2,277 +2,117 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chrome Dino Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux: Choose Freedom</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-primary: #1a1a1a;
+            --accent-color: #f7b500; /* Darker Linux Yellow for contrast */
+        }
+
         body {
             margin: 0;
             padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #f7f7f7;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
-            user-select: none;
-            touch-action: none; /* Prevents scrolling/zooming on mobile */
+            text-align: center;
         }
 
-        #game-container {
-            position: relative;
-            width: 95%;
+        .quote-container {
+            margin-bottom: 2rem;
             max-width: 800px;
-            background-color: #f7f7f7;
-            border-bottom: 2px solid #535353;
+            padding: 0 20px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeInDown 1s forwards ease-out;
         }
 
-        canvas {
-            display: block;
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0;
+        }
+
+        .highlight {
+            color: var(--accent-color);
+        }
+
+        .tux-container {
+            width: clamp(200px, 40vw, 450px);
+            opacity: 0;
+            transform: scale(0.9);
+            animation: fadeInScale 1s 0.3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        img {
             width: 100%;
             height: auto;
-            image-rendering: pixelated; /* Keeps it crisp */
+            filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.1));
         }
 
-        #score {
+        .footer {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            color: #535353;
-            font-family: monospace;
+            bottom: 30px;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #888;
         }
 
-        #game-over {
+        @keyframes fadeInDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Subtle background glow */
+        .glow {
             position: absolute;
-            top: 40%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(247, 181, 0, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            z-index: -1;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            text-align: center;
-            display: none;
-        }
-
-        #game-over h1 {
-            color: #535353;
-            font-size: clamp(18px, 5vw, 24px);
-            margin-bottom: 20px;
-            letter-spacing: 5px;
-        }
-
-        #restart-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        #restart-btn svg {
-            fill: #535353;
-            width: 36px;
-            height: 36px;
-        }
-
-        .instructions {
-            margin-top: 20px;
-            text-align: center;
-            color: #777;
-            font-size: 14px;
         }
     </style>
 </head>
 <body>
+    <div class="glow"></div>
 
-    <div id="game-container">
-        <div id="score">00000</div>
-        <canvas id="gameCanvas"></canvas>
-        
-        <div id="game-over">
-            <h1>G A M E  O V E R</h1>
-            <button id="restart-btn" onclick="resetGame()">
-                <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-            </button>
-        </div>
+    <div class="quote-container">
+        <h1>In a world without <span class="highlight">walls</span>,<br>who needs <span class="highlight">windows</span>?</h1>
+        <p style="font-weight: 300; margin-top: 10px; opacity: 0.8;">Choose Freedom. Choose Linux.</p>
     </div>
-    <div class="instructions"></div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
-        const gameOverElement = document.getElementById('game-over');
+    <div class="tux-container">
+        <img src="tux.png" alt="Tux, the Linux Penguin">
+    </div>
 
-        // Game state
-        let gameRunning = true;
-        let score = 0;
-        let gameSpeed = 5;
-        let animationId;
-
-        // Internal resolution (remains stable)
-        canvas.width = 800;
-        canvas.height = 200;
-
-        // Dino properties
-        const dino = {
-            x: 50,
-            y: 145,
-            width: 44,
-            height: 47,
-            dy: 0,
-            jumpForce: 12,
-            gravity: 0.6,
-            grounded: false,
-            color: '#535353'
-        };
-
-        // Obstacles
-        let obstacles = [];
-
-        function drawDino() {
-            ctx.fillStyle = dino.color;
-            // Body
-            ctx.fillRect(dino.x + 10, dino.y, 25, 35);
-            // Head
-            ctx.fillRect(dino.x + 25, dino.y - 12, 18, 15);
-            // Tail
-            ctx.fillRect(dino.x, dino.y + 10, 10, 15);
-            // Legs
-            ctx.fillRect(dino.x + 12, dino.y + 35, 8, 12);
-            ctx.fillRect(dino.x + 24, dino.y + 35, 8, 12);
-        }
-
-        function drawCactus(x, y, h) {
-            ctx.fillStyle = '#535353';
-            // Main stem
-            ctx.fillRect(x + 8, y + (45 - h), 6, h);
-            // Arms
-            if (h > 20) {
-                ctx.fillRect(x, y + (45 - h) + 12, 8, 4); // Left arm
-                ctx.fillRect(x, y + (45 - h) + 6, 4, 10);
-                
-                ctx.fillRect(x + 14, y + (45-h) + 18, 8, 4); // Right arm
-                ctx.fillRect(x + 18, y + (45-h) + 12, 4, 10);
-            }
-        }
-
-        function createObstacle() {
-            const height = Math.random() * (45 - 30) + 30;
-            obstacles.push({
-                x: canvas.width,
-                y: 195 - height,
-                width: 25,
-                height: height
-            });
-        }
-
-        function update() {
-            if (!gameRunning) return;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Dino Physics
-            if (!dino.grounded) {
-                dino.dy += dino.gravity;
-                dino.y += dino.dy;
-            }
-
-            if (dino.y > 145) {
-                dino.y = 145;
-                dino.dy = 0;
-                dino.grounded = true;
-            }
-
-            drawDino();
-
-            // Obstacle logic
-            const minGap = 200 + (gameSpeed * 10);
-            if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - (Math.random() * 300 + minGap)) {
-                createObstacle();
-            }
-
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                obstacles[i].x -= gameSpeed;
-                drawCactus(obstacles[i].x, obstacles[i].y, obstacles[i].height);
-
-                // Collision Detection (Tightened hitbox)
-                if (
-                    dino.x + 5 < obstacles[i].x + obstacles[i].width &&
-                    dino.x + dino.width - 5 > obstacles[i].x &&
-                    dino.y - 10 < obstacles[i].y + obstacles[i].height &&
-                    dino.y + dino.height > obstacles[i].y
-                ) {
-                    endGame();
-                }
-
-                if (obstacles[i].x + obstacles[i].width < 0) {
-                    obstacles.splice(i, 1);
-                    score++;
-                    updateScoreDisplay();
-                }
-            }
-
-            // Speed up
-            gameSpeed += 0.001;
-
-            animationId = requestAnimationFrame(update);
-        }
-
-        function updateScoreDisplay() {
-            let s = score.toString();
-            while (s.length < 5) s = '0' + s;
-            scoreElement.innerText = s;
-        }
-
-        function jump() {
-            if (dino.grounded && gameRunning) {
-                dino.dy = -dino.jumpForce;
-                dino.grounded = false;
-            }
-        }
-
-        function endGame() {
-            gameRunning = false;
-            gameOverElement.style.display = 'block';
-            cancelAnimationFrame(animationId);
-        }
-
-        function resetGame() {
-            score = 0;
-            gameSpeed = 5;
-            obstacles = [];
-            dino.y = 145;
-            dino.dy = 0;
-            dino.grounded = true;
-            gameRunning = true;
-            gameOverElement.style.display = 'none';
-            updateScoreDisplay();
-            update();
-        }
-
-        // Controls
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'ArrowUp') {
-                jump();
-            }
-        });
-
-        // Touch event with better handling for mobile
-        document.addEventListener('touchstart', (e) => {
-            if (gameRunning) {
-                jump();
-            } else if (gameOverElement.style.display === 'block') {
-                // Check if touch is near restart button is not needed if we just reset on any touch during game over
-                // but let's just make it simple.
-            }
-        }, { passive: false });
-
-        document.addEventListener('mousedown', () => {
-            if (gameRunning) jump();
-        });
-
-        // Start
-        update();
-
-    </script>
+    <div class="footer">
+        Powered by Open Source
+    </div>
 </body>
 </html>

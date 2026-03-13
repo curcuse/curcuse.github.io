@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Linux: Choose Freedom</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,22 +24,24 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
             text-align: center;
+            padding: 20px 15px;
+            box-sizing: border-box;
         }
 
         .quote-container {
-            margin-bottom: 2rem;
-            max-width: 800px;
-            padding: 0 20px;
+            margin-bottom: 1.5rem;
+            max-width: 90vw;
+            padding: 0 10px;
             opacity: 0;
             transform: translateY(-20px);
             animation: fadeInDown 1s forwards ease-out;
         }
 
         h1 {
-            font-size: clamp(2rem, 5vw, 4rem);
+            font-size: clamp(1.8rem, 6vw, 3.5rem);
             font-weight: 800;
             line-height: 1.1;
             margin: 0;
@@ -50,7 +52,7 @@
         }
 
         .tux-container {
-            width: clamp(200px, 40vw, 450px);
+            width: clamp(150px, 35vw, 350px);
             opacity: 0;
             transform: scale(0.9);
             animation: fadeInScale 1s 0.3s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -64,11 +66,11 @@
 
         .footer {
             position: absolute;
-            bottom: 30px;
+            bottom: 20px;
             font-weight: 400;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #888;
         }
 
@@ -89,8 +91,8 @@
         /* Subtle background glow */
         .glow {
             position: absolute;
-            width: 600px;
-            height: 600px;
+            width: min(600px, 80vw);
+            height: min(600px, 80vw);
             background: radial-gradient(circle, rgba(247, 181, 0, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
             z-index: -1;
             top: 50%;

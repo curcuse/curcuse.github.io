@@ -1,10 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My First GitHub Page</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>curcuse.sh</title>
+  <style>
+    body {
+      background-color: #0c0c0c;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 2rem;
+      overflow-x: hidden;
+    }
+    a {
+      color: #00ff00;
+      text-decoration: none;
+    }
+    a:hover {
+      background-color: #00ff00;
+      color: #0c0c0c;
+    }
+    .prompt {
+      color: #00ff00;
+      font-weight: bold;
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      height: 1.2em;
+      background-color: #00ff00;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .output-line {
+      margin-bottom: 0.5rem;
+    }
+    .ascii-art {
+      font-size: 0.8rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, GitHub Pages!</h1>
-  <p>This is my first page.</p>
+  <div class="ascii-art">
+   ____                             
+  / ___|   _ _ __ ___ _   _ ___ ___ 
+ | |  | | | | '__/ __| | | / __/ _ \
+ | |__| |_| | | | (__| |_| \__ \  __/
+  \____\__,_|_|  \___|\__,_|___/\___|
+  </div>
+  
+  <div class="output-line">Welcome to curcuse.github.io v1.0.0</div>
+  <div class="output-line">System: Linux 6.1.0-generic x86_64</div>
+  <div class="output-line">Last login: <script>document.write(new Date().toString().split(' GMT')[0])</script></div>
+  <br>
+  
+  <div class="output-line"><span class="prompt">curcuse@github:~$</span> cat about.txt</div>
+  <div class="output-line">Hello, World! I'm a developer.</div>
+  <div class="output-line">Exploring the digital universe one byte at a time.</div>
+  <br>
+  
+  <div class="output-line"><span class="prompt">curcuse@github:~$</span> ls -l projects/</div>
+  <div class="output-line">drwxr-xr-x 2 curcuse  4096 <a href="#">terminal_app</a></div>
+  <div class="output-line">drwxr-xr-x 2 curcuse  4096 <a href="#">automation_scripts</a></div>
+  <div class="output-line">-rw-r--r-- 1 curcuse  1337 <a href="#">notes.md</a></div>
+  <br>
+
+  <div class="output-line"><span class="prompt">curcuse@github:~$</span> echo "Contact me:"</div>
+  <div class="output-line">- <a href="https://github.com/curcuse">GitHub</a></div>
+  <div class="output-line">- <a href="mailto:curcuse@example.com">Email</a></div>
+  <br>
+
+  <div class="output-line"><span class="prompt">curcuse@github:~$</span> <span class="cursor"></span></div>
+
 </body>
 </html>
